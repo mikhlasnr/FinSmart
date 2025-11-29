@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore"
 
-// Type untuk Module
+// Type for Module
 export interface Module {
   id: string
   title: string
@@ -9,7 +9,7 @@ export interface Module {
   createdAt: Timestamp | Date
 }
 
-// Type untuk Exam
+// Type for Exam
 export interface Exam {
   id: string
   moduleId: string
@@ -18,14 +18,14 @@ export interface Exam {
   maxScore: number
 }
 
-// Type untuk Event Category
+// Type for Event Category
 export interface EventCategory {
   id: string
   name: string
   slug: string
 }
 
-// Type untuk Event
+// Type for Event
 export interface Event {
   id: string
   title: string
@@ -36,7 +36,7 @@ export interface Event {
   registrationLink: string
 }
 
-// Type untuk User Profile
+// Type for User Profile
 export interface UserProfile {
   id: string
   name: string
@@ -48,7 +48,7 @@ export interface UserProfile {
   lastActive?: Timestamp | Date
 }
 
-// Type untuk Exam Result Answer
+// Type for Exam Result Answer
 export interface ExamResultAnswer {
   questionId: string
   question: string
@@ -59,7 +59,7 @@ export interface ExamResultAnswer {
   finalScore: number
 }
 
-// Type untuk Exam Result
+// Type for Exam Result
 export interface ExamResult {
   id: string
   userId: string

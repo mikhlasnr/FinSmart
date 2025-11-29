@@ -204,6 +204,12 @@ export default function EventDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
+        <Link href="/events">
+          <Button variant="ghost" size="sm" className="mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Events
+          </Button>
+        </Link>
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold">{event.title}</h1>
           <Badge
