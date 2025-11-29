@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore"
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/firebase/config"
 import { useAuth } from "@/lib/auth-context"
 import { Module, ExamResult } from "@/lib/types"
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CheckCircle2, FileText, Trophy, ArrowLeft } from "lucide-react"
+import { CheckCircle2, FileText, Trophy, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
 
 export default function ModuleDetailPage() {
@@ -24,6 +24,7 @@ export default function ModuleDetailPage() {
   const [loading, setLoading] = useState(true)
   const [hasCompleted, setHasCompleted] = useState(false)
   const [leaderboard, setLeaderboard] = useState<ExamResult[]>([])
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     if (moduleId) {
@@ -74,18 +75,20 @@ export default function ModuleDetailPage() {
       const resultsRef = collection(db, "exam_results")
       const q = query(
         resultsRef,
-        where("moduleId", "==", moduleId),
-        orderBy("totalScore", "desc"),
-        limit(5)
+        where("moduleId", "==", moduleId)
       )
       const snapshot = await getDocs(q)
-      const topResults: ExamResult[] = []
+      const allResults: ExamResult[] = []
       snapshot.forEach((doc) => {
-        topResults.push({
+        allResults.push({
           id: doc.id,
           ...doc.data(),
         } as ExamResult)
       })
+      // Sort by totalScore descending and limit to top 5
+      const topResults = allResults
+        .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
+        .slice(0, 5)
       setLeaderboard(topResults)
     } catch (error) {
       console.error("Error fetching leaderboard:", error)
@@ -196,17 +199,18 @@ export default function ModuleDetailPage() {
                           {index + 1}
                         </div>
                         <Avatar className="h-8 w-8">
-                          <AvatarImage
-                            src={result.userAvatar || undefined}
-                            alt={result.userDisplayName}
-                          />
+                          {result.userAvatar &&
+                            typeof result.userAvatar === 'string' &&
+                            result.userAvatar.trim() !== '' &&
+                            !imageErrors[result.id] ? (
+                            <AvatarImage
+                              src={result.userAvatar}
+                              alt={result.userDisplayName || "User"}
+                              onError={() => setImageErrors(prev => ({ ...prev, [result.id]: true }))}
+                            />
+                          ) : null}
                           <AvatarFallback>
-                            {result.userDisplayName
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)}
+                            <User className="h-4 w-4" />
                           </AvatarFallback>
                         </Avatar>
                         <div>

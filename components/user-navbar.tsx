@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -26,6 +26,13 @@ export function UserNavbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  // Reset image error when user changes
+  useEffect(() => {
+    setImageError(false)
+  }, [user?.photoURL])
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -69,11 +76,10 @@ export function UserNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "border-[hsl(var(--primary))] text-[hsl(var(--foreground))]"
-                      : "border-transparent text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--border))] hover:text-[hsl(var(--foreground))]"
-                  }`}
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${isActive
+                    ? "border-[hsl(var(--primary))] text-[hsl(var(--foreground))]"
+                    : "border-transparent text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--border))] hover:text-[hsl(var(--foreground))]"
+                    }`}
                 >
                   <Icon className="mr-2 h-4 w-4" />
                   {item.label}
@@ -86,13 +92,19 @@ export function UserNavbar() {
           <div className="flex items-center space-x-4">
             {/* Desktop User Dropdown */}
             <div className="hidden md:block">
-              <DropdownMenu>
+              <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+                      {user?.photoURL && !imageError ? (
+                        <AvatarImage
+                          src={user.photoURL}
+                          alt={user?.displayName || "User"}
+                          onError={() => setImageError(true)}
+                        />
+                      ) : null}
                       <AvatarFallback>
-                        {getInitials(user?.displayName || user?.email || undefined)}
+                        <User className="h-4 w-4" />
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden lg:inline-block text-sm">
@@ -141,11 +153,10 @@ export function UserNavbar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
-                    isActive
-                      ? "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]"
-                      : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
-                  }`}
+                  className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${isActive
+                    ? "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]"
+                    : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
+                    }`}
                 >
                   <Icon className="mr-3 h-5 w-5" />
                   {item.label}
@@ -155,9 +166,15 @@ export function UserNavbar() {
             <div className="pt-4 border-t border-[hsl(var(--border))]">
               <div className="flex items-center px-4 py-3 mb-2">
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+                  {user?.photoURL && !imageError ? (
+                    <AvatarImage
+                      src={user.photoURL}
+                      alt={user?.displayName || "User"}
+                      onError={() => setImageError(true)}
+                    />
+                  ) : null}
                   <AvatarFallback>
-                    {getInitials(user?.displayName || user?.email || undefined)}
+                    <User className="h-5 w-5" />
                   </AvatarFallback>
                 </Avatar>
                 <div>

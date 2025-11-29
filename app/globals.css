@@ -88,32 +88,62 @@ p {
 /* Module content styling (for HTML from Tiptap) */
 .module-content {
   line-height: 1.8;
+  color: hsl(var(--foreground));
+}
+
+.module-content>*:first-child {
+  margin-top: 0;
+}
+
+.module-content>*:last-child {
+  margin-bottom: 0;
 }
 
 .module-content h1 {
   font-size: 2em;
-  font-weight: bold;
-  margin-top: 1em;
-  margin-bottom: 0.67em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.3;
+  color: hsl(var(--foreground));
 }
 
 .module-content h2 {
   font-size: 1.5em;
-  font-weight: bold;
-  margin-top: 0.83em;
-  margin-bottom: 0.83em;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.75em;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
 }
 
 .module-content h3 {
-  font-size: 1.17em;
-  font-weight: bold;
+  font-size: 1.25em;
+  font-weight: 600;
   margin-top: 1em;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
+}
+
+.module-content h4 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 0.75em;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
+}
+
+.module-content p {
+  margin: 0.75em 0;
+  line-height: 1.7;
+  color: hsl(var(--foreground));
 }
 
 .module-content ul,
 .module-content ol {
-  padding-left: 1.5em;
+  padding-left: 1.75em;
   margin: 1em 0;
 }
 
@@ -125,23 +155,94 @@ p {
   list-style-type: decimal;
 }
 
+.module-content li {
+  margin: 0.5em 0;
+  line-height: 1.7;
+}
+
+.module-content li>p {
+  margin: 0.5em 0;
+}
+
 .module-content blockquote {
   border-left: 4px solid hsl(var(--border));
-  padding-left: 1em;
-  margin: 1em 0;
+  padding-left: 1.25em;
+  margin: 1.5em 0;
   font-style: italic;
   color: hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted) / 0.3);
+  padding: 1em 1.25em;
+  border-radius: 0.25rem;
+}
+
+.module-content code {
+  background-color: hsl(var(--muted));
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.module-content pre {
+  background-color: hsl(var(--muted));
+  padding: 1em;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.module-content pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.9em;
 }
 
 .module-content strong {
-  font-weight: bold;
+  font-weight: 600;
+  color: hsl(var(--foreground));
 }
 
 .module-content em {
   font-style: italic;
 }
 
-.module-content p {
-  margin: 0.5em 0;
+.module-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
+.module-content a:hover {
+  color: hsl(var(--primary) / 0.8);
+}
+
+.module-content hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2em 0;
+}
+
+.module-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5em 0;
+}
+
+.module-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.module-content th,
+.module-content td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.75em;
+  text-align: left;
+}
+
+.module-content th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+}
