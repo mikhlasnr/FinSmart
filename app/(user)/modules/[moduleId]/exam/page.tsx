@@ -203,14 +203,14 @@ export default function ExamPage() {
       percentage >= 80
         ? "text-green-600"
         : percentage >= 50
-        ? "text-yellow-600"
-        : "text-red-600"
+          ? "text-yellow-600"
+          : "text-red-600"
     const scoreBg =
       percentage >= 80
         ? "bg-green-50 border-green-200"
         : percentage >= 50
-        ? "bg-yellow-50 border-yellow-200"
-        : "bg-red-50 border-red-200"
+          ? "bg-yellow-50 border-yellow-200"
+          : "bg-red-50 border-red-200"
 
     return (
       <div className="space-y-6">

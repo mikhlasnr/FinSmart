@@ -16,8 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Calendar, Search, ExternalLink } from "lucide-react"
+import { Calendar, Search } from "lucide-react"
 import { format } from "date-fns"
+import { Timestamp } from "firebase/firestore"
+import Link from "next/link"
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([])
@@ -91,8 +93,16 @@ export default function EventsPage() {
 
   const getEventStatus = (event: Event) => {
     const now = new Date()
-    const start = event.startDate instanceof Date ? event.startDate : new Date(event.startDate)
-    const end = event.endDate instanceof Date ? event.endDate : new Date(event.endDate)
+    const start = event.startDate instanceof Date
+      ? event.startDate
+      : event.startDate instanceof Timestamp
+        ? event.startDate.toDate()
+        : new Date(event.startDate)
+    const end = event.endDate instanceof Date
+      ? event.endDate
+      : event.endDate instanceof Timestamp
+        ? event.endDate.toDate()
+        : new Date(event.endDate)
 
     if (now < start) return "upcoming"
     if (now >= start && now <= end) return "ongoing"
@@ -213,8 +223,16 @@ export default function EventsPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredEvents.map((event) => {
             const status = getEventStatus(event)
-            const startDate = event.startDate instanceof Date ? event.startDate : new Date(event.startDate)
-            const endDate = event.endDate instanceof Date ? event.endDate : new Date(event.endDate)
+            const startDate = event.startDate instanceof Date
+              ? event.startDate
+              : event.startDate instanceof Timestamp
+                ? event.startDate.toDate()
+                : new Date(event.startDate)
+            const endDate = event.endDate instanceof Date
+              ? event.endDate
+              : event.endDate instanceof Timestamp
+                ? event.endDate.toDate()
+                : new Date(event.endDate)
 
             return (
               <Card key={event.id} className="hover:shadow-md transition-shadow">
@@ -226,15 +244,15 @@ export default function EventsPage() {
                         status === "upcoming"
                           ? "default"
                           : status === "ongoing"
-                          ? "default"
-                          : "outline"
+                            ? "default"
+                            : "outline"
                       }
                     >
                       {status === "upcoming"
                         ? "Upcoming"
                         : status === "ongoing"
-                        ? "Ongoing"
-                        : "Ended"}
+                          ? "Ongoing"
+                          : "Ended"}
                     </Badge>
                   </div>
                   <CardTitle className="text-lg">{event.title}</CardTitle>
@@ -247,19 +265,25 @@ export default function EventsPage() {
                   <p className="text-sm text-[hsl(var(--muted-foreground))] line-clamp-3 mb-4">
                     {stripHtml(event.description)}
                   </p>
-                  {event.registrationLink && (
-                    <a
-                      href={event.registrationLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full"
-                    >
+                  <div className="flex flex-col gap-2">
+                    <Link href={`/events/${event.id}`} className="w-full">
                       <Button className="w-full" variant="outline">
                         View Details
-                        <ExternalLink className="ml-2 h-4 w-4" />
                       </Button>
-                    </a>
-                  )}
+                    </Link>
+                    {event.registrationLink && (
+                      <a
+                        href={event.registrationLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full"
+                      >
+                        <Button className="w-full">
+                          Register
+                        </Button>
+                      </a>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             )

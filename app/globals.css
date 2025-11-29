@@ -86,20 +86,24 @@ p {
 }
 
 /* Module content styling (for HTML from Tiptap) */
-.module-content {
+.module-content,
+.event-content {
   line-height: 1.8;
   color: hsl(var(--foreground));
 }
 
-.module-content>*:first-child {
+.module-content>*:first-child,
+.event-content>*:first-child {
   margin-top: 0;
 }
 
-.module-content>*:last-child {
+.module-content>*:last-child,
+.event-content>*:last-child {
   margin-bottom: 0;
 }
 
-.module-content h1 {
+.module-content h1,
+.event-content h1 {
   font-size: 2em;
   font-weight: 700;
   margin-top: 1.5em;
@@ -108,7 +112,8 @@ p {
   color: hsl(var(--foreground));
 }
 
-.module-content h2 {
+.module-content h2,
+.event-content h2 {
   font-size: 1.5em;
   font-weight: 600;
   margin-top: 1.25em;
@@ -117,7 +122,8 @@ p {
   color: hsl(var(--foreground));
 }
 
-.module-content h3 {
+.module-content h3,
+.event-content h3 {
   font-size: 1.25em;
   font-weight: 600;
   margin-top: 1em;
@@ -126,7 +132,8 @@ p {
   color: hsl(var(--foreground));
 }
 
-.module-content h4 {
+.module-content h4,
+.event-content h4 {
   font-size: 1.1em;
   font-weight: 600;
   margin-top: 0.75em;
@@ -135,36 +142,44 @@ p {
   color: hsl(var(--foreground));
 }
 
-.module-content p {
+.module-content p,
+.event-content p {
   margin: 0.75em 0;
   line-height: 1.7;
   color: hsl(var(--foreground));
 }
 
 .module-content ul,
-.module-content ol {
+.module-content ol,
+.event-content ul,
+.event-content ol {
   padding-left: 1.75em;
   margin: 1em 0;
 }
 
-.module-content ul {
+.module-content ul,
+.event-content ul {
   list-style-type: disc;
 }
 
-.module-content ol {
+.module-content ol,
+.event-content ol {
   list-style-type: decimal;
 }
 
-.module-content li {
+.module-content li,
+.event-content li {
   margin: 0.5em 0;
   line-height: 1.7;
 }
 
-.module-content li>p {
+.module-content li>p,
+.event-content li>p {
   margin: 0.5em 0;
 }
 
-.module-content blockquote {
+.module-content blockquote,
+.event-content blockquote {
   border-left: 4px solid hsl(var(--border));
   padding-left: 1.25em;
   margin: 1.5em 0;
@@ -175,7 +190,8 @@ p {
   border-radius: 0.25rem;
 }
 
-.module-content code {
+.module-content code,
+.event-content code {
   background-color: hsl(var(--muted));
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
@@ -183,7 +199,8 @@ p {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
-.module-content pre {
+.module-content pre,
+.event-content pre {
   background-color: hsl(var(--muted));
   padding: 1em;
   border-radius: 0.5rem;
@@ -191,58 +208,69 @@ p {
   margin: 1.5em 0;
 }
 
-.module-content pre code {
+.module-content pre code,
+.event-content pre code {
   background-color: transparent;
   padding: 0;
   font-size: 0.9em;
 }
 
-.module-content strong {
+.module-content strong,
+.event-content strong {
   font-weight: 600;
   color: hsl(var(--foreground));
 }
 
-.module-content em {
+.module-content em,
+.event-content em {
   font-style: italic;
 }
 
-.module-content a {
+.module-content a,
+.event-content a {
   color: hsl(var(--primary));
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.module-content a:hover {
+.module-content a:hover,
+.event-content a:hover {
   color: hsl(var(--primary) / 0.8);
 }
 
-.module-content hr {
+.module-content hr,
+.event-content hr {
   border: none;
   border-top: 1px solid hsl(var(--border));
   margin: 2em 0;
 }
 
-.module-content img {
+.module-content img,
+.event-content img {
   max-width: 100%;
   height: auto;
   border-radius: 0.5rem;
   margin: 1.5em 0;
 }
 
-.module-content table {
+.module-content table,
+.event-content table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5em 0;
 }
 
 .module-content th,
-.module-content td {
+.module-content td,
+.event-content th,
+.event-content td {
   border: 1px solid hsl(var(--border));
   padding: 0.75em;
   text-align: left;
 }
 
-.module-content th {
+.module-content th,
+.event-content th {
   background-color: hsl(var(--muted));
   font-weight: 600;
 }
