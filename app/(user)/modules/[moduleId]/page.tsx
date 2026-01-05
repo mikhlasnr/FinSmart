@@ -10,8 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CheckCircle2, FileText, Trophy, ArrowLeft, User } from "lucide-react"
+import { CheckCircle2, FileText, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 export default function ModuleDetailPage() {
@@ -23,13 +22,10 @@ export default function ModuleDetailPage() {
   const [module, setModule] = useState<Module | null>(null)
   const [loading, setLoading] = useState(true)
   const [hasCompleted, setHasCompleted] = useState(false)
-  const [leaderboard, setLeaderboard] = useState<ExamResult[]>([])
-  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     if (moduleId) {
       fetchModule()
-      fetchLeaderboard()
       if (user) {
         checkCompletion()
       }
@@ -70,30 +66,6 @@ export default function ModuleDetailPage() {
     }
   }
 
-  const fetchLeaderboard = async () => {
-    try {
-      const resultsRef = collection(db, "exam_results")
-      const q = query(
-        resultsRef,
-        where("moduleId", "==", moduleId)
-      )
-      const snapshot = await getDocs(q)
-      const allResults: ExamResult[] = []
-      snapshot.forEach((doc) => {
-        allResults.push({
-          id: doc.id,
-          ...doc.data(),
-        } as ExamResult)
-      })
-      // Sort by totalScore descending and limit to top 5
-      const topResults = allResults
-        .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
-        .slice(0, 5)
-      setLeaderboard(topResults)
-    } catch (error) {
-      console.error("Error fetching leaderboard:", error)
-    }
-  }
 
   if (loading) {
     return (
@@ -148,90 +120,30 @@ export default function ModuleDetailPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="space-y-6">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Module Content</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                className="module-content prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: module.content }}
-              />
-            </CardContent>
-          </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Module Content</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              className="module-content prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: module.content }}
+            />
+          </CardContent>
+        </Card>
 
-          {/* Sticky Bottom Bar */}
-          <div className="sticky bottom-0 bg-[hsl(var(--background))] border-t border-[hsl(var(--border))] p-4 -mx-6 lg:mx-0 lg:rounded-lg lg:border lg:shadow-sm">
-            <div className="flex gap-4">
-              <Link href={`/modules/${moduleId}/exam`} className="flex-1">
-                <Button className="w-full" size="lg">
-                  <FileText className="mr-2 h-4 w-4" />
-                  {hasCompleted ? "Retake Exam" : "Take Exam"}
-                </Button>
-              </Link>
-            </div>
+        {/* Sticky Bottom Bar */}
+        <div className="sticky bottom-0 bg-[hsl(var(--background))] border-t border-[hsl(var(--border))] p-4 -mx-6 lg:mx-0 lg:rounded-lg lg:border lg:shadow-sm">
+          <div className="flex gap-4">
+            <Link href={`/modules/${moduleId}/exam`} className="flex-1">
+              <Button className="w-full" size="lg">
+                <FileText className="mr-2 h-4 w-4" />
+                {hasCompleted ? "Retake Exam" : "Take Exam"}
+              </Button>
+            </Link>
           </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Leaderboard */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5" />
-                Top Learners
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {leaderboard.length > 0 ? (
-                <div className="space-y-3">
-                  {leaderboard.map((result, index) => (
-                    <div
-                      key={result.id}
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-[hsl(var(--accent))] transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[hsl(var(--muted))] text-sm font-semibold">
-                          {index + 1}
-                        </div>
-                        <Avatar className="h-8 w-8">
-                          {result.userAvatar &&
-                            typeof result.userAvatar === 'string' &&
-                            result.userAvatar.trim() !== '' &&
-                            !imageErrors[result.id] ? (
-                            <AvatarImage
-                              src={result.userAvatar}
-                              alt={result.userDisplayName || "User"}
-                              onError={() => setImageErrors(prev => ({ ...prev, [result.id]: true }))}
-                            />
-                          ) : null}
-                          <AvatarFallback>
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">
-                            {result.userDisplayName}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant={index < 3 ? "default" : "secondary"}>
-                        {result.totalScore}%
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-[hsl(var(--muted-foreground))] text-center py-4">
-                  No results yet
-                </p>
-              )}
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

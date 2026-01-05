@@ -19,7 +19,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Menu, LogOut, User, Home, BookOpen, Calendar } from "lucide-react"
+import { Menu, LogOut, User, Home, BookOpen, Calendar, History } from "lucide-react"
 
 export function UserNavbar() {
   const { user, signOut } = useAuth()
@@ -28,15 +28,42 @@ export function UserNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
 
   // Reset image error when user changes
   useEffect(() => {
     setImageError(false)
   }, [user?.photoURL])
 
+  // Handle scroll behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      // Show navbar when at top of page
+      if (currentScrollY < 10) {
+        setIsVisible(true)
+      } else {
+        // Hide when scrolling down, show when scrolling up
+        if (currentScrollY > lastScrollY) {
+          setIsVisible(false) // Scrolling down
+        } else {
+          setIsVisible(true) // Scrolling up
+        }
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScrollY])
+
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
     { href: "/modules", label: "Modules", icon: BookOpen },
+    { href: "/exam-history", label: "Exam History", icon: History },
     { href: "/events", label: "Events", icon: Calendar },
   ]
 
@@ -55,7 +82,10 @@ export function UserNavbar() {
   }
 
   return (
-    <nav className="bg-[hsl(var(--card))] border-b border-[hsl(var(--border))]">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--card))] border-b border-[hsl(var(--border))] transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
@@ -113,11 +143,21 @@ export function UserNavbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setUserMenuOpen(false)
+                      router.push("/profile")
+                    }}
+                  >
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setUserMenuOpen(false)
+                      handleSignOut()
+                    }}
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
