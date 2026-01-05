@@ -9,7 +9,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { BookOpen, CheckCircle2 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { BookOpen, CheckCircle2, Trophy, User } from "lucide-react"
 import Link from "next/link"
 
 export default function ModulesPage() {
@@ -17,6 +25,11 @@ export default function ModulesPage() {
   const [modules, setModules] = useState<Module[]>([])
   const [completedModules, setCompletedModules] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
+  const [leaderboardDialogOpen, setLeaderboardDialogOpen] = useState(false)
+  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null)
+  const [leaderboard, setLeaderboard] = useState<ExamResult[]>([])
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     fetchModules()
@@ -64,6 +77,39 @@ export default function ModulesPage() {
       console.error("Error fetching completed modules:", error)
     }
   }
+
+  const fetchLeaderboard = async (moduleId: string) => {
+    setLoadingLeaderboard(true)
+    try {
+      const resultsRef = collection(db, "exam_results")
+      const q = query(resultsRef, where("moduleId", "==", moduleId))
+      const snapshot = await getDocs(q)
+      const allResults: ExamResult[] = []
+      snapshot.forEach((doc) => {
+        allResults.push({
+          id: doc.id,
+          ...doc.data(),
+        } as ExamResult)
+      })
+      // Sort by totalScore descending and limit to top 5
+      const topResults = allResults
+        .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
+        .slice(0, 5)
+      setLeaderboard(topResults)
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error)
+    } finally {
+      setLoadingLeaderboard(false)
+    }
+  }
+
+  const handleOpenLeaderboard = (moduleId: string) => {
+    setSelectedModuleId(moduleId)
+    setLeaderboardDialogOpen(true)
+    fetchLeaderboard(moduleId)
+  }
+
+  const selectedModule = modules.find((m) => m.id === selectedModuleId)
 
   if (loading) {
     return (
@@ -136,18 +182,93 @@ export default function ModulesPage() {
                     {module.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-2">
                   <Link href={`/modules/${module.id}`}>
                     <Button className="w-full" variant={isCompleted ? "outline" : "default"}>
                       {isCompleted ? "Review Module" : "View Module"}
                     </Button>
                   </Link>
+                  <div className="h-2"></div>
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => handleOpenLeaderboard(module.id)}
+                  >
+                    <Trophy className="mr-2 h-4 w-4" />
+                    Top Learners
+                  </Button>
                 </CardContent>
               </Card>
             )
           })}
         </div>
       )}
+
+      {/* Leaderboard Dialog */}
+      <Dialog open={leaderboardDialogOpen} onOpenChange={setLeaderboardDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5" />
+              Top Learners
+            </DialogTitle>
+            <DialogDescription>
+              {selectedModule ? selectedModule.title : "Module Leaderboard"}
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingLeaderboard ? (
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
+            </div>
+          ) : leaderboard.length > 0 ? (
+            <div className="space-y-3">
+              {leaderboard.map((result, index) => (
+                <div
+                  key={result.id}
+                  className="flex items-center justify-between p-3 rounded-md hover:bg-[hsl(var(--accent))] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[hsl(var(--muted))] text-sm font-semibold">
+                      {index + 1}
+                    </div>
+                    <Avatar className="h-8 w-8">
+                      {result.userAvatar &&
+                        typeof result.userAvatar === "string" &&
+                        result.userAvatar.trim() !== "" &&
+                        !imageErrors[result.id] ? (
+                        <AvatarImage
+                          src={result.userAvatar}
+                          alt={result.userDisplayName || "User"}
+                          onError={() =>
+                            setImageErrors((prev) => ({ ...prev, [result.id]: true }))
+                          }
+                        />
+                      ) : null}
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">{result.userDisplayName}</p>
+                    </div>
+                  </div>
+                  <Badge variant={index < 3 ? "default" : "secondary"}>
+                    {result.totalScore} /{" "}
+                    {result.answers.reduce((sum, a) => sum + a.maxScore, 0)}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[hsl(var(--muted-foreground))] text-center py-4">
+              No results yet
+            </p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

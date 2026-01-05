@@ -330,7 +330,7 @@ export default function ProfilePage() {
                   <Award className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
                   <span className="text-sm">Average Score</span>
                 </div>
-                <span className="font-semibold">{stats.averageScore}%</span>
+                <span className="font-semibold">{stats.averageScore}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

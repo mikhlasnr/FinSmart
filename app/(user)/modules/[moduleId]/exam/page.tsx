@@ -13,26 +13,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { FormField, FormTextarea } from "@/components/ui/form-field"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Loader2, ArrowLeft, CheckCircle2, XCircle } from "lucide-react"
+import { Loader2, ArrowLeft, CheckCircle2, XCircle, Brain } from "lucide-react"
 import Link from "next/link"
-
-// Simple text similarity function (mock scoring)
-function calculateSimilarity(text1: string, text2: string): number {
-  const normalize = (text: string) => text.toLowerCase().trim()
-  const t1 = normalize(text1)
-  const t2 = normalize(text2)
-
-  if (t1 === t2) return 1.0
-  if (t1.includes(t2) || t2.includes(t1)) return 0.8
-  if (t1.length === 0 || t2.length === 0) return 0
-
-  // Simple word overlap
-  const words1 = new Set(t1.split(/\s+/))
-  const words2 = new Set(t2.split(/\s+/))
-  const intersection = new Set([...words1].filter((x) => words2.has(x)))
-  const union = new Set([...words1, ...words2])
-  return intersection.size / union.size
-}
+import { scoreExamWithAI, ScoringAnswer } from "@/lib/ai-scoring"
 
 export default function ExamPage() {
   const params = useParams()
@@ -107,27 +90,34 @@ export default function ExamPage() {
     setSubmitting(true)
 
     try {
-      // Calculate scores
-      const answers: ExamResultAnswer[] = []
-      let totalScore = 0
+      // Prepare answers for AI scoring
+      const scoringAnswers: ScoringAnswer[] = exams.map((exam) => ({
+        question_id: exam.id,
+        key_answer: exam.keyAnswer,
+        student_answer: data[exam.id] || "",
+        max_score: exam.maxScore,
+      }))
 
-      exams.forEach((exam) => {
+      // Call AI scoring API
+      const aiResponse = await scoreExamWithAI(scoringAnswers)
+
+      // Map AI results to ExamResultAnswer format
+      const answers: ExamResultAnswer[] = exams.map((exam) => {
         const userAnswer = data[exam.id] || ""
-        const similarityScore = calculateSimilarity(userAnswer, exam.keyAnswer)
-        const finalScore = Math.round(similarityScore * exam.maxScore)
+        const aiResult = aiResponse.results.find((r) => r.question_id === exam.id)
 
-        answers.push({
+        return {
           questionId: exam.id,
           question: exam.question,
           userAnswer,
           keyAnswer: exam.keyAnswer,
           maxScore: exam.maxScore,
-          similarityScore,
-          finalScore,
+          similarityScore: aiResult?.similarity_score || 0,
+          finalScore: aiResult?.final_score || 0,
+        }
         })
 
-        totalScore += finalScore
-      })
+      const totalScore = aiResponse.total_score
 
       // Save to Firestore
       const resultData: Omit<ExamResult, "id"> = {

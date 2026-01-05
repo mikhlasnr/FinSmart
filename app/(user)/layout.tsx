@@ -12,7 +12,7 @@ export default function UserLayout({
     <UserGuard>
       <div className="min-h-screen bg-[hsl(var(--background))]">
         <UserNavbar />
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main className="max-w-7xl mx-auto pt-20 pb-6 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

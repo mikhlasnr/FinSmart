@@ -140,7 +140,7 @@ export default function DashboardPage() {
             <Award className="h-4 w-4 text-[hsl(var(--muted-foreground))]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.averageScore}%</div>
+            <div className="text-2xl font-bold">{stats.averageScore}</div>
             <p className="text-xs text-[hsl(var(--muted-foreground))]">
               Across all exams
             </p>
