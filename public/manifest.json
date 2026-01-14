@@ -4,8 +4,8 @@
   "description": "Learn financial literacy and improve your financial knowledge",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#38a5a1",
-  "theme_color": "#0f766e",
+  "background_color": "#1F8BA7",
+  "theme_color": "#1F8BA7",
   "orientation": "portrait-primary",
   "icons": [
     {

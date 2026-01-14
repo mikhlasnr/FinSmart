@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "FinSmart - Financial Literacy Platform",
   description: "Learn financial literacy and improve your financial knowledge",
   manifest: "/manifest.json",
-  themeColor: "#0f766e",
+  themeColor: "#1F8BA7",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
