@@ -10,6 +10,7 @@ User-facing dashboard for FinSmart Financial Literacy Platform.
 - **Form Handling**: React Hook Form + Zod
 - **State Management**: React Context
 - **Icons**: Lucide React
+- **PWA**: Progressive Web App support dengan offline caching
 
 ## Features
 
@@ -48,6 +49,12 @@ User-facing dashboard for FinSmart Financial Literacy Platform.
    - View account information
    - View learning statistics
 
+7. **Progressive Web App (PWA)**
+   - Install sebagai aplikasi di mobile/desktop
+   - Offline support dengan service worker caching
+   - Fast loading dengan aggressive caching
+   - Native app-like experience
+
 ## Setup
 
 1. Install dependencies:
@@ -69,12 +76,24 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
 NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 ```
 
-3. Run development server:
+3. Setup PWA Icons (Opsional):
+   - Buat icon FinSmart dengan ukuran 512x512 pixels
+   - Generate semua ukuran icon menggunakan tool seperti [PWA Asset Generator](https://github.com/onderceylan/pwa-asset-generator)
+   - Letakkan icon-icon di folder `public/icons/` (lihat `public/icons/README.md` untuk detail)
+   - Jika icon belum dibuat, PWA tetap berfungsi tapi tanpa icon custom
+
+4. Run development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Build untuk production (PWA hanya aktif di production):
+```bash
+npm run build
+npm start
+```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Folder Structure
 
@@ -102,6 +121,9 @@ FinSmart/
 │   ├── auth-context.tsx     # Auth context
 │   ├── types.ts             # Type definitions
 │   └── utils.ts             # Utility functions
+├── public/
+│   ├── manifest.json        # PWA manifest
+│   └── icons/              # PWA icons (lihat README.md di folder ini)
 └── firebase/
     └── config.ts            # Firebase configuration
 ```
@@ -114,6 +136,18 @@ FinSmart/
 - `exam_results`: Exam submissions & scores
 - `eventCategories`: Event categories (created by admin)
 - `events`: Events/Programs (created by admin)
+
+## PWA Features
+
+- **Install Prompt**: User dapat install aplikasi ke home screen (mobile/desktop)
+- **Offline Support**: Service worker akan cache static assets dan API responses
+- **Fast Loading**: Aggressive caching untuk navigasi yang lebih cepat
+- **App-like Experience**: Standalone display mode tanpa browser UI
+
+**Catatan**:
+- PWA hanya aktif di production build (`npm run build`)
+- Di development mode, PWA dinonaktifkan untuk memudahkan debugging
+- Pastikan icon-icon sudah dibuat dan ditempatkan di `public/icons/` untuk experience yang optimal
 
 ## Notes
 
