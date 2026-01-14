@@ -179,7 +179,11 @@ export default function EventsPage() {
             <div className="w-full sm:w-48">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
-                  <SelectValue placeholder="All Categories" />
+                  <SelectValue placeholder="All Categories">
+                    {selectedCategory === "all"
+                      ? "All Categories"
+                      : getCategoryName(selectedCategory)}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>

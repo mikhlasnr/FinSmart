@@ -88,8 +88,8 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <Skeleton className="h-10 w-64 mb-2" />
-          <Skeleton className="h-4 w-96" />
+          <Skeleton className="h-10 w-40 sm:w-64 mb-2" />
+          <Skeleton className="h-4 w-48 sm:w-96" />
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
@@ -106,21 +106,21 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-4 sm:pb-6">
       {/* Hero Section */}
-      <Card className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-[hsl(var(--primary-foreground))]">
-        <CardHeader>
-          <CardTitle className="text-3xl">
+      <Card className="bg-linear-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-[hsl(var(--primary-foreground))]">
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="text-2xl sm:text-3xl text-center sm:text-left">
             Welcome back, {user?.displayName || "User"}!
           </CardTitle>
-          <CardDescription className="text-[hsl(var(--primary-foreground))]/80">
+          <CardDescription className="mt-2 text-sm sm:text-base text-[hsl(var(--primary-foreground))]/80 text-center sm:text-left">
             Continue your financial literacy journey
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Modules Completed</CardTitle>
@@ -178,10 +178,10 @@ export default function DashboardPage() {
 
       {/* Recent Activity */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Continue Learning</h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold">Continue Learning</h2>
           <Link href="/modules">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
               View All
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -228,7 +228,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Browse Modules</CardTitle>
