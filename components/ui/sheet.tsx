@@ -32,14 +32,30 @@ const Sheet = ({
     }
   }, [open])
 
+  // Handle ESC key
+  React.useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onOpenChange(false)
+      }
+    }
+    if (open) {
+      document.addEventListener("keydown", handleEscape)
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [open, onOpenChange])
+
   if (!open) return null
 
   return (
     <SheetContext.Provider value={{ open, onOpenChange }}>
       <div className="fixed inset-0 z-50">
         <div
-          className="fixed inset-0 bg-black/50"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => onOpenChange(false)}
+          aria-hidden="true"
         />
         {children}
       </div>
@@ -58,18 +74,26 @@ const SheetContent = React.forwardRef<
     throw new Error("SheetContent must be used within Sheet")
 
   const sideClasses = {
-    top: "inset-x-0 top-0 border-b",
-    right: "inset-y-0 right-0 h-full w-full sm:w-[540px] border-l",
-    bottom: "inset-x-0 bottom-0 border-t",
-    left: "inset-y-0 left-0 h-full w-full sm:w-[540px] border-r",
+    top: "inset-x-0 top-0 border-b rounded-b-lg",
+    right: "inset-y-0 right-0 h-full w-full sm:w-[400px] border-l",
+    bottom: "inset-x-0 bottom-0 border-t rounded-t-lg",
+    left: "inset-y-0 left-0 h-full w-full sm:w-[400px] border-r",
+  }
+
+  const transformClasses = {
+    top: context.open ? "translate-y-0" : "-translate-y-full",
+    right: context.open ? "translate-x-0" : "translate-x-full",
+    bottom: context.open ? "translate-y-0" : "translate-y-full",
+    left: context.open ? "translate-x-0" : "-translate-x-full",
   }
 
   return (
     <div
       ref={ref}
       className={cn(
-        "fixed z-50 bg-[hsl(var(--background))] p-6 shadow-lg transition-transform",
+        "fixed z-50 bg-[hsl(var(--background))] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto will-change-transform",
         sideClasses[side],
+        transformClasses[side],
         className
       )}
       onClick={(e) => e.stopPropagation()}
