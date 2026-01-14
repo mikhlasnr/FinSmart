@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
@@ -132,9 +133,14 @@ export function UserNavbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/dashboard" className="shrink-0">
-              <h1 className="text-lg sm:text-xl font-bold text-[hsl(var(--foreground))]">
-                FinSmart
-              </h1>
+              <Image
+                src="/finsmart-logo.png"
+                alt="FinSmart"
+                width={120}
+                height={40}
+                className="h-8 sm:h-10 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -241,9 +247,14 @@ export function UserNavbar() {
             <div className="flex flex-col max-h-[85vh] overflow-hidden">
               {/* Header with Close Button */}
               <div className="flex items-center justify-between px-4 sm:px-6 h-14 sm:h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] shrink-0">
-                <h2 className="text-lg sm:text-xl font-bold text-[hsl(var(--foreground))]">
-                  FinSmart
-                </h2>
+                <Image
+                  src="/finsmart-logo.png"
+                  alt="FinSmart"
+                  width={120}
+                  height={40}
+                  className="h-8 sm:h-10 w-auto"
+                  priority
+                />
                 <Button
                   variant="ghost"
                   size="icon"
