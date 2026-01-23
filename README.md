@@ -76,24 +76,18 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
 NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 ```
 
-3. Setup PWA Icons (Opsional):
-   - Buat icon FinSmart dengan ukuran 512x512 pixels
-   - Generate semua ukuran icon menggunakan tool seperti [PWA Asset Generator](https://github.com/onderceylan/pwa-asset-generator)
-   - Letakkan icon-icon di folder `public/icons/` (lihat `public/icons/README.md` untuk detail)
-   - Jika icon belum dibuat, PWA tetap berfungsi tapi tanpa icon custom
-
-4. Run development server:
+3. Run development server:
 ```bash
 npm run dev
 ```
 
-5. Build untuk production (PWA hanya aktif di production):
+4. Build untuk production (PWA hanya aktif di production):
 ```bash
 npm run build
 npm start
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Folder Structure
 
