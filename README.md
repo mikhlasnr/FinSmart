@@ -81,13 +81,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 npm run dev
 ```
 
-4. Build untuk production (PWA hanya aktif di production):
-```bash
-npm run build
-npm start
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Folder Structure
 
